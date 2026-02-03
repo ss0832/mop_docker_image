@@ -1,4 +1,4 @@
-# mop_docker
+# mop_docker_image
 
 After downloading this repository, run the following command:
 ```
