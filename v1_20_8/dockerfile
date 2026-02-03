@@ -1,5 +1,6 @@
 # 1. Base Image
 FROM continuumio/miniconda3@sha256:5df7c31c16e90e4ea370836770feed507a1cf51c6e8aad835c65fb26b9eca941
+#FROM condaforge/miniforge3@sha256:b81d121aeafbeb396eab6db99a3b3118cde085f0d82dacc04508a002730c304e
 
 RUN conda install -y python=3.12 \
     && conda clean -afy
