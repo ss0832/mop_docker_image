@@ -2,8 +2,8 @@
 
 After downloading this repository, run the following command:
 ```
-cd v1_20_8
-docker build -t mop-stable:v1.20.8 .
+cd v1_20_X
+docker build -t mop-stable:v1.20.X .
 ```
 Environment for build:
 ```
