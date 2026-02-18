@@ -27,4 +27,6 @@ $ uname -m
 x86_64
 $ docker inspect --format='{{index .RepoDigests 0}}' mop-stable:v1.20.8
 mop-stable@sha256:92ac6bb0feea57698a4707165851c1efde326e449794dd444dfa0fff66655d1d
+$ docker inspect --format='{{index .RepoDigests 0}}' mop-stable:v1.20.9
+mop-stable@sha256:8d5bc7098ce656ab55c42e8aa543bea9a9957595b5b446321d48651c23ae978e
 ```
