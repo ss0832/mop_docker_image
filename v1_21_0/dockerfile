@@ -1,0 +1,42 @@
+# 1. Base Image
+#FROM continuumio/miniconda3@sha256:5df7c31c16e90e4ea370836770feed507a1cf51c6e8aad835c65fb26b9eca941
+FROM condaforge/miniforge3@sha256:b81d121aeafbeb396eab6db99a3b3118cde085f0d82dacc04508a002730c304e
+
+RUN conda install -y python=3.12 \
+    && conda clean -afy
+
+# 2. System Settings
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    git \
+    build-essential \
+    unzip \
+	vim \
+    nano \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. Dependencies Installation
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 4. Archive Injection & Installation
+COPY MultiOptPy-1.21.0.zip .
+RUN unzip MultiOptPy-1.21.0.zip && \
+    cd MultiOptPy-* && \
+    pip install --no-deps . && \
+    cd ..
+
+# 4.5 Create Non-Root User & Setup Conda Auto-activate
+RUN useradd -m -s /bin/bash user01
+RUN echo "source /opt/conda/etc/profile.d/conda.sh" >> /home/user01/.bashrc && \
+    echo "conda activate base" >> /home/user01/.bashrc
+
+USER user01
+ENV HOME=/home/user01
+WORKDIR /home/user01
+
+COPY --chown=user01:user01 MultiOptPy-1.21.0.zip .
+
+# 5. Finalize
+CMD ["/bin/bash", "--login"]
