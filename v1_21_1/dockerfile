@@ -1,0 +1,40 @@
+# 1. Base Image
+FROM condaforge/miniforge3@sha256:b81d121aeafbeb396eab6db99a3b3118cde085f0d82dacc04508a002730c304e
+
+RUN conda install -y python=3.12 \
+    && conda clean -afy
+
+WORKDIR /app
+
+# 2. Dependencies & Build Tools (Install -> Use -> Purge in one layer)
+COPY requirements.txt .
+COPY MultiOptPy-1.21.1.zip .
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    build-essential \
+    unzip \
+	vim-tiny \
+    && pip install --no-cache-dir -r requirements.txt \
+    && unzip MultiOptPy-1.21.1.zip \
+    && cd MultiOptPy-* \
+    && pip install --no-deps . \
+    && cd .. \
+    && rm -rf MultiOptPy-* requirements.txt MultiOptPy-1.21.1.zip \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. Create Non-Root User with fixed UID/GID
+RUN groupadd -g 1000 user01 && \
+    useradd -m -s /bin/bash -u 1000 -g 1000 user01 && \
+    echo "source /opt/conda/etc/profile.d/conda.sh" >> /home/user01/.bashrc && \
+    echo "conda activate base" >> /home/user01/.bashrc
+
+USER user01
+ENV HOME=/home/user01
+WORKDIR /home/user01
+
+# 4. User Request: Keep the zip file in user home
+COPY --chown=user01:user01 MultiOptPy-1.21.1.zip .
+
+# 5. Finalize
+CMD ["/bin/bash", "--login"]
