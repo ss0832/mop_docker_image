@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && cd MultiOptPy-* \
     && pip install --no-deps . \
     && cd .. \
+	&& apt-get purge -y --auto-remove git build-essential \
     && rm -rf MultiOptPy-* requirements.txt MultiOptPy-1.21.1.zip \
     && rm -rf /var/lib/apt/lists/*
 
