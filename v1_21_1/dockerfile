@@ -25,11 +25,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # 3. Create Non-Root User with fixed UID/GID
-RUN groupadd -g 1000 user01 && \
-    useradd -m -s /bin/bash -u 1000 -g 1000 user01 && \
+RUN if ! getent group 1000 >/dev/null; then groupadd -g 1000 user01; fi && \
+    if ! getent passwd 1000 >/dev/null; then \
+        useradd -m -s /bin/bash -u 1000 -g 1000 user01; \
+    else \
+        old_user=$(getent passwd 1000 | cut -d: -f1) && \
+        usermod -l user01 -d /home/user01 -m $old_user && \
+        groupmod -n user01 $(getent group 1000 | cut -d: -f1) || true; \
+    fi && \
     echo "source /opt/conda/etc/profile.d/conda.sh" >> /home/user01/.bashrc && \
     echo "conda activate base" >> /home/user01/.bashrc
-
+	
 USER user01
 ENV HOME=/home/user01
 WORKDIR /home/user01
