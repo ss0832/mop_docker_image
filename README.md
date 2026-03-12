@@ -33,4 +33,6 @@ $ docker inspect --format='{{index .RepoDigests 0}}' mop-stable:v1.21.0
 mop-stable@sha256:6a742e9438ca0cb06d2e445d96a31dd1cf5c219f1a5042725e747ac5c26a3474
 $ docker inspect --format='{{index .RepoDigests 0}}' mop-stable:v1.21.1
 mop-stable@sha256:165f52d27d7220130242b106e10f3104ca89498b503a6b3d3234e9c79f52ba99
+$ docker inspect --format='{{index .RepoDigests 0}}' mop-stable:v1.21.2
+mop-stable@sha256:43998ad0a07d0c7a9a18b0fe856d770b0a6823a62505afab937e47a4b621ca03
 ```
